@@ -40,10 +40,10 @@ class LearningAgent(Agent):
             self.epsilon = 0
             self.alpha = 0
         else:
-            #decaying_rate = 0.00001
-            #self.epsilon = self.epsilon *((1- (decaying_rate)) ** self.trials)
-            #self.alpha = self.alpha *((1-decaying_rate)**self.trials)
-            self.epsilon = self.epsilon - 0.05
+            decaying_rate = 0.00001
+            self.epsilon = self.epsilon *((1- (decaying_rate)) ** self.trials)
+            self.alpha = self.alpha *((1-decaying_rate)**self.trials)
+            #self.epsilon = self.epsilon - 0.05
         ########### 
         ## TO DO ##
         ###########
@@ -89,10 +89,6 @@ class LearningAgent(Agent):
 
         labels = pd.Index.tolist(actions[actions.values == maxValue].index)
         return random.choice(labels)
-        ########### 
-        ## TO DO ##
-        ###########
-        # Calculate the maximum Q-value of all actions for a given state
 
 
     def genKey(self,state):
@@ -114,14 +110,6 @@ class LearningAgent(Agent):
 
 
 
-        ########### 
-        ## TO DO ##
-        ###########
-        # When learning, check if the 'state' is not in the Q-table
-        # If it is not, create a new dictionary for that state
-        #   Then, for each action available, set the initial Q-value to 0.0
-
-
 
     def choose_action(self, state):
         """ The choose_action function is called when the agent is asked to choose
@@ -130,18 +118,18 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
+
+
+        #not using random here because Qmax already returns a randon label
+        #between the max values
         action = self.get_maxQ(state)
+
         randomAction = random.choice(self.valid_actions)
         randomFloat = random.uniform(0, 1)
-        if randomFloat < self.epsilon:
+        #return a randon action if learning or if it is in the epsilon range 
+        if randomFloat < self.epsilon or not self.learning:
             return randomAction
-        ########### 
-        ## TO DO ##
-        ###########
-        # When not learning, choose a random action
-        # When learning, choose a random action with 'epsilon' probability
-        # Otherwise, choose an action with the highest Q-value for the current state
-        # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
+        #other wise return the best action
         return action
 
 

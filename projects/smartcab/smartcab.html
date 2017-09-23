@@ -13152,7 +13152,7 @@ MzMzMzOrkf8HDRQN1b+/2JgAAAAASUVORK5CYII=
 <ul>
 <li><em>How frequently is the driving agent making bad decisions? How many of those bad decisions cause accidents?</em></li>
 </ul>
-<p>from the results obtained around 40% of the decision ar bed decisions and around 10 percent of the decisions caused and accident.</p>
+<p>from the results obtained around 40% of the decision ar bed decisions and around 25 percent of the decisions caused an accident.</p>
 <ul>
 <li><em>Given that the agent is driving randomly, does the rate of reliability make sense?</em></li>
 </ul>
@@ -13224,7 +13224,18 @@ boilers down to a roll between 4 choices.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <p>waypoint: to be able to propely evaluate the actual state is necessary to know where the smartcab is heading</p>
-<p>inputs: that is kind of vital, as it is really necessary to know what is going on around</p>
+<p>inputs: is composed by 4 different variables while not all of them are really necessary it is a essential feature to learn ex:</p>
+
+<pre><code>  lights: this is the core element to learn as it represent 50% of the states where the cab shouldn't take any action 
+  oncoming: this is important when turning left to now if it need wait for the lane to clear before turning 
+
+  left and right: are quite useless states here becaude those cars shouldnt be moving when the light is green for the cab so those are just useful to avoid one accident in case another car cross a red light and the simulator dont take it in consideration. but on a real life taxy it should be taken in consideration.
+
+
+
+
+
+</code></pre>
 <p>but deadline is not essential as it will just inflate the number of states and it is not necessary to get the proper action as there is no action that will depend on the time left the reward system already takes care of it by giving a better reward if the action taken is the one indicated on the waypoint what is already the shortest way.</p>
 
 </div>
@@ -13259,12 +13270,12 @@ boilers down to a roll between 4 choices.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>waypoints as we have 4 possible actions it gives 4 states for waypoints</p>
+<p>waypoints as we have 3 possible actions it gives 3 states for waypoints</p>
 <p>inputs we have:
 2 possible states for light 
 4 states for each of (oncoming,left,right)
 it gives a 2<em>4</em>4*4 = 128 states</p>
-<p>what gives a total of 512 states , and yes i believe is possible to train on all this states on a resonable time.</p>
+<p>what gives a total of 378 states , and yes i believe is possible to train on all this states on a resonable time.</p>
 
 </div>
 </div>
@@ -15785,8 +15796,9 @@ kjQiFliSJEmSNCL/D+J34lpMqs2qAAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <p>lets start by in comparison with the plot from exercise 3 it has some inprovement that is because the number of trials are not enough to visit all possible states enough times to it to learn some thing.</p>
-<p>it is possible to see that the learning process in clearly inproving (shown by the bad decisions decayin and reliability rate growing)but yet dont reach a usable state what leave the ratings as F what put this process as good as a random one</p>
-<p>but by using less states actually just 6 states by taking in consideration just light and the waypoint it is possible to get the best sores with few training tests what would give the following states:</p>
+<p>the number of trials before testing was 20 what is quite logical given that 1/0.05 = 20 and tolerance = 0.05 so the tests start when epsilon reachs 0</p>
+<p>it is possible to see that the learning process in clearly inproving (shown by the bad decisions decayin and reliability rate growing)but yet dont reach a usable state what leave the ratings for safety F what put this process as good as a random one , but yet it gets bit better on reliability getting a D rating</p>
+<p>and for the sake of learning and better understand the process a made some othe tests that wasn't demanded but i want to understand the efect of reducing the features so using less states actually just 6 states by taking in consideration just light and the waypoint it is possible to get the best scores with few training tests what would give the following states:</p>
 <p>('forward', 'red')
  -- forward : -13.61
  -- None : 1.38
@@ -17790,12 +17802,31 @@ gg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>the decaying function unsed for epsilon and alpha are the following:
-$$ \epsilon = \epsilon (1 - learning_rate)^t$$ 
-$$ \alpha = \alpha (1 - learning_rate)^t$$</p>
-<p>what makes it run for 1795 training trials with a initial epsilon = 1 and alpha = 0.5
-the improvements were incredibly well while it takes much longer to train it gives really nice scores ratings 
-what shows that the model propely learns it just didn't train long enough</p>
+<ul>
+<li><em>What decaying function was used for epsilon (the exploration factor)?</em>
+the decaying function unsed for epsilon and alpha are the following:
+$$ \epsilon = \epsilon (1 - decaying_rate)^t$$ 
+$$ \alpha = \alpha (1 - decaying_rate)^t$$
+where decaying_rate = 0.00001</li>
+<li><p><em>Approximately how many training trials were needed for your agent before begining testing?</em>
+what makes it run for 1795 training trials</p>
+</li>
+<li><p><em>What epsilon-tolerance and alpha (learning rate) did you use? Why did you use them?</em>
+with a initial epsilon = 1 and alpha = 0.5 tolerance = 0.00001
+those numbers are the product of many try and error</p>
+</li>
+</ul>
+<ul>
+<li><p><em>How much improvement was made with this Q-Learner when compared to the default Q-Learner from the previous section?</em>
+the improvements were incredibly well while it takes much longer to train it gives really nice scores ratings and if comparing the bad actions that was around 20% on the previous test on this one it reachs nearly 0</p>
+</li>
+<li><p><em>Would you say that the Q-Learner results show that your driving agent successfully learned an appropriate policy?</em>
+yes the results shows that the model propely learns it the problem on the previous models is that it just didn't train long enough and by using a proper decaying function and randon choices to train it visits enough state to become relyable</p>
+</li>
+<li><p><em>Are you satisfied with the safety and reliability ratings of the </em>Smartcab<em>?</em>
+yes it gets the best scores</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -17839,51 +17870,23 @@ what shows that the model propely learns it just didn't train long enough</p>
 <p><strong>Answer:</strong></p>
 <p>the optimal police on the given enviroment is quite simple actualy it cam be resumed to if light is green take next waipoint as action if is red take none. but if compared to a real life case the proper police should include if the lane is clear for turning</p>
 <p>so basicly we have those states:</p>
-<p>red-light(whatever waypoint): none
-green-light(left): wait oposite lane to clear and take action left
-green-light(right or foreward): just take the action (right or foward)</p>
+<p>red-light(whatever waypoint): none</p>
+<p>green-light(left): wait oposite lane to clear and take action left\</p>
+<p>green-light(right or foreward): just take the action (right or foward)</p>
 <p>when analysing the <strong>sim_inproved-learning.txt</strong> most of the policy are right with like the few exemples below:</p>
-<p>('right', 'red', None, 'right', 'right')
- -- forward : 0.00
- -- None : 0.36
- -- right : 0.00
- -- left : -4.95</p>
-<p>('left', 'green', 'left', None, 'forward')
- -- forward : 0.29
- -- None : -4.84
- -- right : 0.22
- -- left : 1.87</p>
-<p>('left', 'red', None, 'right', 'left')
- -- forward : -8.91
- -- None : 1.18
- -- right : 0.48
- -- left : -5.55</p>
-<p>('left', 'green', 'left', None, None)
- -- forward : 0.55
- -- None : -4.99
- -- right : 0.71
- -- left : 1.75</p>
-<p>('left', 'green', 'forward', 'forward', 'forward')
- -- forward : 0.00
- -- None : -3.68
- -- right : 0.00
- -- left : 1.69</p>
-<p>('right', 'red', 'left', None, 'right')
- -- forward : -9.19
- -- None : 0.59
- -- right : 1.61
- -- left : -9.38</p>
-<p>('left', 'green', 'forward', None, None)
- -- forward : 0.93
- -- None : -5.20
- -- right : 0.93
- -- left : 1.70</p>
-<p>but is possible to find some special cases like:</p>
-<p>('forward', 'green', 'forward', 'right', None)
- -- forward : 0.42
- -- None : -3.49
- -- right : 0.57
- -- left : 0.70</p>
+<p>example of an optimal policy:</p>
+<p>('left', 'green', 'left', None, 'forward')</p>
+<p>-- forward : 0.29</p>
+<p>-- None : -4.84</p>
+<p>-- right : 0.22</p>
+<p>-- left : 1.87</p>
+<p>on this exemple is noticible that it learned the proper policy even it fallows the waypoint with the green light but we also see that all the other actions has some value and not the initial 0 value what shows that all the possibilities have being tested before left became the action to be taken</p>
+<p>example of a sub-optimal policy:</p>
+<p>('forward', 'green', 'forward', 'right', None)</p>
+<p>-- forward : 0.42</p>
+<p>-- None : -3.49</p>
+<p>-- right : 0.57</p>
+<p>-- left : 0.70</p>
 <p>and it possibly happens because at the begning of the learning the actions taken are randon and because that if the first action taken was left and later on the learning fase were the actions ar not random anymore it just sticks what it leaned before</p>
 
 </div>
