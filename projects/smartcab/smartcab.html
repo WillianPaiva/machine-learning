@@ -11840,7 +11840,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import the visualization code</span>
@@ -11993,7 +11993,7 @@ Run the agent.py file after setting the flags from projects/smartcab folder inst
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_no-learning&#39; log file from the initial simulation results</span>
@@ -13229,10 +13229,9 @@ boilers down to a roll between 4 choices.</p>
 <pre><code>  lights: this is the core element to learn as it represent 50% of the states where the cab shouldn't take any action 
   oncoming: this is important when turning left to now if it need wait for the lane to clear before turning 
 
-  left and right: are quite useless states here becaude those cars shouldnt be moving when the light is green for the cab so those are just useful to avoid one accident in case another car cross a red light and the simulator dont take it in consideration. but on a real life taxy it should be taken in consideration.
+  left: because i've never being in the us and took me time to understand that a car can cross a red light to turn right i was considering this infomation useless, bua as i've being informed it is necessary to know that before taking the decision to turn right in case of a red light  
 
-
-
+ right: the right still a useless one as it doesn't matter at all to the cab unless a car is crossing a red light but in this case the accident is do not happen because of the cab. (but maybe is usefull to avoid an accident even if is not our fault) 
 
 
 </code></pre>
@@ -13275,7 +13274,7 @@ boilers down to a roll between 4 choices.</p>
 2 possible states for light 
 4 states for each of (oncoming,left,right)
 it gives a 2<em>4</em>4*4 = 128 states</p>
-<p>what gives a total of 378 states , and yes i believe is possible to train on all this states on a resonable time.</p>
+<p>what gives a total of 384 states , and yes i believe is possible to train on all this states on a resonable time.</p>
 
 </div>
 </div>
@@ -13338,7 +13337,7 @@ $$ \epsilon_{t+1} = \epsilon_{t} - 0.05, \hspace{10px}\textrm{for trial number }
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_default-learning&#39; file from the default Q-Learning simulation</span>
@@ -15875,7 +15874,7 @@ $$ \epsilon = a^t, \textrm{for } 0 < a < 1 \hspace{50px}\epsilon = \frac{1}{t^2}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Load the &#39;sim_improved-learning&#39; file from the improved Q-Learning simulation</span>
@@ -17808,6 +17807,11 @@ the decaying function unsed for epsilon and alpha are the following:
 $$ \epsilon = \epsilon (1 - decaying_rate)^t$$ 
 $$ \alpha = \alpha (1 - decaying_rate)^t$$
 where decaying_rate = 0.00001</li>
+</ul>
+<p>a decaying alpha was used here specialy because two factors:
+1 - testing around that was one of the main factors on why i used it i want to learn and understand it better 
+2 - better precision the use of a decaying learning rate is usefull because you can have a fast learn at the begining when the agent doesn't have any knowledge yet and as it starts to learn you decay the learning rate to reach a more precise and fine tunned result.</p>
+<ul>
 <li><p><em>Approximately how many training trials were needed for your agent before begining testing?</em>
 what makes it run for 1795 training trials</p>
 </li>
@@ -17870,7 +17874,8 @@ yes it gets the best scores</p>
 <p><strong>Answer:</strong></p>
 <p>the optimal police on the given enviroment is quite simple actualy it cam be resumed to if light is green take next waipoint as action if is red take none. but if compared to a real life case the proper police should include if the lane is clear for turning</p>
 <p>so basicly we have those states:</p>
-<p>red-light(whatever waypoint): none</p>
+<p>red-light(whatever waypoint): if is turning right and no car is comming from left it can turn else it returns: none
+that was another mistake as i didn't know this special rule from us.</p>
 <p>green-light(left): wait oposite lane to clear and take action left\</p>
 <p>green-light(right or foreward): just take the action (right or foward)</p>
 <p>when analysing the <strong>sim_inproved-learning.txt</strong> most of the policy are right with like the few exemples below:</p>
@@ -17919,8 +17924,8 @@ yes it gets the best scores</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong>
-first about the cab using a the future rewards would be good if the cab was trying to find the shortest path but it already has the way point to follow so it is quite useless in this case.
-the second problem is the enviroment what is considered as a future state depends on the enviroment state on t+1 and that would mean that to be able to proper calculate the t+1 reward we need to know what color the light will be and more over what actions every othe car will take to know the state what makes it unrealistic</p>
+first about the cab using a the future rewards would be good if the cab was trying to find the shortest path but it already has the way point to follow so it is quite useless in this case and moreover the destination is not a fix point what makes that the next state will be diferent dependint on the destination that would cause a esponential growth of states depending o the size of the grid.</p>
+<p>the second problem is the enviroment what is considered as a future state depends on the enviroment state on t+1 and that would mean that to be able to proper calculate the t+1 reward we need to know what color the light will be and moreover what actions every othe car will take to know the state, and also the fact that de destination changes from trial to trial it can get realy cumbersone and unrealistic.</p>
 
 </div>
 </div>
